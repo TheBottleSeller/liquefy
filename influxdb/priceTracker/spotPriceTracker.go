@@ -14,8 +14,8 @@ import (
 // This IAM Roles only has AmazonEC2ReadOnlyAccess
 // Probably should do this a different way though
 // YOLO
-var AwsAccessKey = "AKIAI5XITPNIAIUK7WJQ"
-var AwsSecretKey = "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"
+var AwsAccessKey = ""
+var AwsSecretKey = ""
 
 func main() {
     region := flag.String("region", "", "the ip of the api server")
