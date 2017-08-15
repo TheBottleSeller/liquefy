@@ -1,0 +1,30 @@
+package models;
+
+message Trade {
+
+  required int64 Ram = 4;
+  required int64 Cpu = 5;
+  required int64 Gpu = 6;
+
+  required string TradeId = 1;
+  required string Ticker = 2;
+  required string Provider = 3;
+  required string Side =7;
+
+  required string ResourceInstanceID = 8;
+
+  optional uint32 ID = 9;
+  optional int64 CreatedAt = 10;
+  optional int64 DeletedAt = 11;
+}
+
+
+message Leger {
+    optional uint32 ID = 5;
+
+	required string BuyerTradeID = 1;
+	required string SellerTradeID = 2;
+
+	optional int64 CreatedAt = 3;
+	optional int64 DeletedAt = 4;
+}

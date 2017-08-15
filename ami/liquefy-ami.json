@@ -1,0 +1,90 @@
+{
+    "variables": {
+        "aws_access_key": "",
+        "aws_secret_key": ""
+    },
+    "builders": [{
+        "type": "amazon-ebs",
+        "communicator": "ssh",
+        "ssh_username": "ubuntu",
+        "access_key": "{{user `aws_access_key`}}",
+        "secret_key": "{{user `aws_secret_key`}}",
+        "region": "us-east-1",
+        "source_ami": "ami-6889d200",
+        "ami_regions": ["us-west-1", "us-west-2"],
+        "instance_type": "g2.2xlarge",
+        "ami_name": "liquefy {{timestamp}}",
+        "ami_groups": "all",
+        "tags": {
+            "Liquefy": "Liquefy"
+        }
+    }],
+    "provisioners": [{
+        "type": "shell",
+        "start_retry_timeout": "10m",
+        "inline": [
+            "sleep 30",
+            "sudo apt-get update -y",
+            "sudo apt-get install -y curl apt-transport-https ca-certificates",
+            "if ! type docker; then curl -sSL https://get.docker.com | sh -; fi",
+            "sudo usermod -aG docker ubuntu",
+
+            "sudo apt-get install -y freeglut3-dev build-essential libx11-dev libxmu-dev libxi-dev libgl1-mesa-glx-lts-trusty libglu1-mesa libglu1-mesa-dev",
+            "sudo apt-get install linux-headers-$(uname -r) -y",
+            "sudo apt-get remove -y linux-image-extra-3.13.0-46-generic linux-headers-3.13.0-46 linux-headers-3.13.0-46-generic linux-image-3.13.0-46-generic",
+
+            "echo 'blacklist vga16fb' | sudo tee -a /etc/modprobe.d/blacklist.conf",
+            "echo 'blacklist nouveau' | sudo tee -a /etc/modprobe.d/blacklist.conf",
+            "echo 'blacklist rivafb' | sudo tee -a /etc/modprobe.d/blacklist.conf",
+            "echo 'blacklist nvidiafb' | sudo tee -a /etc/modprobe.d/blacklist.conf",
+            "echo 'blacklist rivatv' | sudo tee -a /etc/modprobe.d/blacklist.conf",
+            "sudo update-initramfs -k all -u",
+
+            "sudo reboot",
+            "sleep 60"
+        ]
+    }, {
+        "type": "shell",
+        "start_retry_timeout": "10m",
+        "inline": [
+            "sudo apt-get autoremove",
+            "sudo apt-get clean",
+            "sudo rm -rf /usr/local/cuda-7.0/",
+
+            "cd /mnt",
+            "sudo wget http://developer.download.nvidia.com/compute/cuda/7_0/Prod/local_installers/cuda_7.0.28_linux.run",
+            "sudo chmod u+x cuda_7.0.28_linux.run",
+            "sudo ./cuda_7.0.28_linux.run --silent --toolkit --driver --verbose",
+            "echo 'export PATH=$PATH:/usr/local/cuda-7.0/bin' >> ~/.bashrc",
+            "echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda-7.0/lib64' >> ~/.bashrc",
+
+            "sudo rm /etc/rc.local",
+            "sudo touch /etc/rc.local",
+            "sudo chmod u+x /etc/rc.local",
+            "echo '#!/bin/sh -e' | sudo tee -a /etc/rc.local",
+            "echo 'nvidia-smi > /tmp/liquefy-smi' | sudo tee -a /etc/rc.local",
+            "echo 'nvidia-modprobe -u -c=0 > /tmp/liquefy-uvm' | sudo tee -a /etc/rc.local",
+            "echo 'exit 0' | sudo tee -a /etc/rc.local",
+
+            "sudo reboot",
+            "sleep 60"
+        ]
+    }, {
+        "type": "shell",
+        "start_retry_timeout": "10m",
+        "inline": [
+            "sudo apt-get install -y libsvn1",
+            "docker pull mesosphere/mesos-slave:0.25.0-0.2.70.ubuntu1404",
+            "docker pull liquefy/logger:latest",
+
+            "echo '  _     _                   __         _       ' | sudo tee -a /etc/motd",
+            "echo ' | |   (_) __ _ _   _  ___ / _|_   _  (_) ___  ' | sudo tee -a /etc/motd",
+            "echo ' | |   | |/ _| | | | |/ _ \\ |_| | | | | |/ _ \\ ' | sudo tee -a /etc/motd",
+            "echo ' | |___| | (_| | |_| |  __/  _| |_| |_| | (_) |' | sudo tee -a /etc/motd",
+            "echo ' |_____|_|\\__, |\\__,_|\\___|_|  \\__, (_)_|\\___/ ' | sudo tee -a /etc/motd",
+            "echo '             |_|               |___/           ' | sudo tee -a /etc/motd",
+            "echo '                                               ' | sudo tee -a /etc/motd",
+            "echo ' Ubuntu  |  CUDA GPU  |  Docker |  Autoscaling ' | sudo tee -a /etc/motd"
+        ]
+    }]
+}

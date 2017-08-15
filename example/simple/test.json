@@ -1,0 +1,13 @@
+{  
+  "name":"Demo Job",
+  "Ram":10,
+  "Cpu":1,
+  "ContainerJobs":[  
+    {  
+      "name":"simpleServer",
+      "SourceImage":"ubuntu",
+      "environment":[  
+      ]
+    } 
+  ]
+}

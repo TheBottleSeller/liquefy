@@ -1,0 +1,49 @@
+package models;
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+option (gogoproto.populate_all) = true;
+
+// NOTES
+// The model fields are hardcoded and hence should have constants also here maybe ?
+
+message AwsAccount {
+    required uint32 ID = 1                          [(gogoproto.jsontag) = "id", (gogoproto.moretags) = "gorm:\"primary_key\""];
+    optional string AwsAccessKey = 2                [(gogoproto.jsontag) = "awsAccessKey"];
+    optional string AwsSecretKey = 3                [(gogoproto.jsontag) = "awsSecretKey"];
+
+    // Us East 1
+    optional string AwsVpcIdUsEast1 = 4             [(gogoproto.jsontag) = "awsVpcIdUsEast1"];
+    optional string AwsSshPrivateKeyUsEast1 = 29    [(gogoproto.jsontag) = "awsSshPrivateKeyUsEast1", (gogoproto.moretags) = "sql:\"type:varchar(2048);unique\""];
+    optional string AwsSecurityGroupNameUsEast1 = 5 [(gogoproto.jsontag) = "awsSecurityGroupNameUsEast1"];
+    optional string AwsSecurityGroupIdUsEast1 = 6   [(gogoproto.jsontag) = "awsSecurityGroupIdUsEast1"];
+    optional string AwsSubnetIdUsEast1a = 7         [(gogoproto.jsontag) = "awsSubnetIdUsEast1a"];
+    optional string AwsSubnetIdUsEast1b = 8         [(gogoproto.jsontag) = "awsSubnetIdUsEast1b"];
+    optional string AwsSubnetIdUsEast1c = 9         [(gogoproto.jsontag) = "awsSubnetIdUsEast1c"];
+    optional string AwsSubnetIdUsEast1d = 10        [(gogoproto.jsontag) = "awsSubnetIdUsEast1d"];
+    optional string AwsSubnetIdUsEast1e = 11        [(gogoproto.jsontag) = "awsSubnetIdUsEast1e"];
+
+    // Us West 1
+    optional string AwsVpcIdUsWest1 = 12            [(gogoproto.jsontag) = "awsVpcIdUsWest1"];
+    optional string AwsSshPrivateKeyUsWest1 = 30    [(gogoproto.jsontag) = "awsSshPrivateKeyUsWest1", (gogoproto.moretags) = "sql:\"type:varchar(2048);unique\""];
+    optional string AwsSecurityGroupNameUsWest1 = 13[(gogoproto.jsontag) = "awsSecurityGroupNameUsWest1"];
+    optional string AwsSecurityGroupIdUsWest1 = 14  [(gogoproto.jsontag) = "awsSecurityGroupIdUsWest1"];
+    optional string AwsSubnetIdUsWest1a = 15        [(gogoproto.jsontag) = "awsSubnetIdUsWest1a"];
+    optional string AwsSubnetIdUsWest1b = 16        [(gogoproto.jsontag) = "awsSubnetIdUsWest1b"];
+    optional string AwsSubnetIdUsWest1c = 17        [(gogoproto.jsontag) = "awsSubnetIdUsWest1c"];
+    optional string AwsSubnetIdUsWest1d = 18        [(gogoproto.jsontag) = "awsSubnetIdUsWest1d"];
+    optional string AwsSubnetIdUsWest1e = 19        [(gogoproto.jsontag) = "awsSubnetIdUsWest1e"];
+
+    // Us West 2
+    optional string AwsVpcIdUsWest2 = 20            [(gogoproto.jsontag) = "awsVpcIdUsWest2"];
+    optional string AwsSshPrivateKeyUsWest2 = 31    [(gogoproto.jsontag) = "awsSshPrivateKeyUsWest2", (gogoproto.moretags) = "sql:\"type:varchar(2048);unique\""];
+    optional string AwsSecurityGroupNameUsWest2 = 21[(gogoproto.jsontag) = "awsSecurityGroupNameUsWest2"];
+    optional string AwsSecurityGroupIdUsWest2 = 22  [(gogoproto.jsontag) = "awsSecurityGroupIdUsWest2"];
+    optional string AwsSubnetIdUsWest2a = 23        [(gogoproto.jsontag) = "awsSubnetIdUsWest2a"];
+    optional string AwsSubnetIdUsWest2b = 24        [(gogoproto.jsontag) = "awsSubnetIdUsWest2b"];
+    optional string AwsSubnetIdUsWest2c = 25        [(gogoproto.jsontag) = "awsSubnetIdUsWest2c"];
+    optional string AwsSubnetIdUsWest2d = 26        [(gogoproto.jsontag) = "awsSubnetIdUsWest2d"];
+    optional string AwsSubnetIdUsWest2e = 27        [(gogoproto.jsontag) = "awsSubnetIdUsWest2e"];
+
+    //Errors
+    optional string Error = 28                      [(gogoproto.jsontag) = "error"];
+}

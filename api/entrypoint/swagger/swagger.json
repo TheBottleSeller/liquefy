@@ -1,0 +1,318 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "0.0.1",
+    "title": "Liquefy"
+  },
+  "host": "localhost:3030",
+  "basePath": "/api",
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/jobs": {
+      "x-swagger-router-controller": "jobs",
+      "get": {
+        "tags": [
+          "Jobs"
+        ],
+        "summary": "List all jobs",
+        "description": "Returns a list of all the job IDs. Every time that a job is started, it is assigned a unique ID and some basic information is persisted. This call will return the IDs of all the persisted jobs.",
+        "operationId": "list",
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/JobList"
+            }
+          }
+        }
+      }
+    },
+    "/job": {
+      "x-swagger-router-controller": "jobs",
+      "post": {
+        "tags": [
+          "Jobs"
+        ],
+        "summary": "Submit a new job",
+        "description": "Submits a new job for execution. The execution of the job happens asynchronous to the API call -- the API will respond immediately while execution happens in the background.",
+        "operationId": "create",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Parameters of the job that is being created",
+            "schema": {
+              "$ref": "#/definitions/Job"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/JobId"
+            }
+          }
+        }
+      }
+    },
+    "/job/{id}": {
+      "x-swagger-router-controller": "jobs",
+      "get": {
+        "tags": [
+          "Jobs"
+        ],
+        "summary": "View a single job",
+        "operationId": "read",
+        "description": "Returns an object containing job status and related information for a specific job",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true,
+            "description": "Id of job that is being requested"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/JobStatusResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Jobs"
+        ],
+        "summary": "Delete a job",
+        "operationId": "remove",
+        "description": "Stops and deletes a job with a specified id, if it exists",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true,
+            "description": "Id of job which is being deleted"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/JobDeleteResponse"
+            }
+          }
+        }
+      }
+    },
+    "/job/{id}/log": {
+      "x-swagger-router-controller": "jobs",
+      "get": {
+        "tags": [
+          "Jobs"
+        ],
+        "summary": "View logs for a job",
+        "operationId": "read_log",
+        "description": "Returns a JSON array of the lines of logs written out for a specified job",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true,
+            "description": "Id of job whose logs are being requested"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/JobLogResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Job": {
+      "type": "object",
+      "required": [
+        "name",
+        "command",
+        "source_image",
+        "ram",
+        "cpu"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the job being created"
+        },
+        "command": {
+          "type": "string",
+          "description": "Docker command that the container runs"
+        },
+        "environment": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EnvironmentVariable"
+          },
+          "description": "Array of environment variable objects"
+        },
+        "port_mappings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PortMapping"
+          },
+          "description": "Array of host to container port mappings"
+        },
+        "source_image": {
+          "type": "string",
+          "description": "Name of docker image"
+        },
+        "ram": {
+          "type": "integer",
+          "description": "Amount of RAM in megabytes"
+        },
+        "cpu": {
+          "type": "number",
+          "description": "Number of CPU cores"
+        },
+        "gpu": {
+          "type": "integer",
+          "description": "Number of GPUs"
+        }
+      }
+    },
+    "EnvironmentVariable": {
+      "type": "object",
+      "required": [
+        "variable",
+        "value"
+      ],
+      "properties": {
+        "variable": {
+          "type": "string",
+          "description": "Name of the environment variable"
+        },
+        "value": {
+          "type": "string",
+          "description": "Value of the environment variable"
+        }
+      }
+    },
+    "PortMapping": {
+      "type": "object",
+      "required": [
+        "host_port",
+        "container_port"
+      ],
+      "properties": {
+        "host_port": {
+          "type": "integer",
+          "description": "Host port to use"
+        },
+        "container_port": {
+          "type": "integer",
+          "description": "Container port to use"
+        }
+      }
+    },
+    "JobId": {
+      "type": "integer"
+    },
+    "JobDisplay": {
+      "type": "object",
+      "required": [
+        "name",
+        "status",
+        "source_image",
+        "cost",
+        "time_elapsed"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Job name"
+        },
+        "status": {
+          "type": "string",
+          "description": "Current status of job"
+        },
+        "source_image": {
+          "type": "string",
+          "description": "Docker source image for job"
+        },
+        "cost": {
+          "type": "number",
+          "description": "Cost so far for job execution"
+        },
+        "time_elapsed": {
+          "type": "string",
+          "description": "Time elapsed since job creation"
+        }
+      }
+    },
+    "JobList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/JobDisplay"
+      }
+    },
+    "JobStatusResponse": {
+      "type": "object",
+      "required": [
+        "name",
+        "status",
+        "progress",
+        "start_time"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the specified job"
+        },
+        "status": {
+          "type": "string",
+          "description": "Current status of the specified job."
+        },
+        "progress": {
+          "type": "string",
+          "description": "Progress of the current job, as a percentage"
+        },
+        "start_time": {
+          "type": "string",
+          "description": "Start time for the current job"
+        },
+        "end_time": {
+          "type": "string",
+          "description": "End time for the current job, if applicable"
+        }
+      }
+    },
+    "JobLogResponse": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "JobDeleteResponse": {
+      "type": "string"
+    }
+  }
+}

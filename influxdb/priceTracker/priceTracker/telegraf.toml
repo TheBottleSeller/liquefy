@@ -1,0 +1,129 @@
+# Telegraf configuration
+
+# Configuration for telegraf agent
+[agent]
+  # Default data collection interval for all plugins
+  interval = "30s"
+  # Rounds collection interval to 'interval'
+  # ie, if interval="10s" then always collect on :00, :10, :20, etc.
+  round_interval = true
+
+  # Default data flushing interval for all outputs. You should not set this below
+  # interval. Maximum flush_interval will be flush_interval + flush_jitter
+  flush_interval = "10s"
+  # Jitter the flush interval by a random amount. This is primarily to avoid
+  # large write spikes for users running a large number of telegraf instances.
+  # ie, a jitter of 5s and interval 10s means flushes will happen every 10-15s
+  flush_jitter = "0s"
+
+  # Run telegraf in debug mode
+  debug = true
+  # Override default hostname, if empty use os.Hostname()
+  hostname = ""
+
+
+###############################################################################
+#                                  OUTPUTS                                    #
+###############################################################################
+
+[outputs]
+
+# Configuration for influxdb server to send metrics to
+[[outputs.influxdb]]
+  # The full HTTP or UDP endpoint URL for your InfluxDB instance.
+  # Multiple urls can be specified but it is assumed that they are part of the same
+  # cluster, this means that only ONE of the urls will be written to each interval.
+  # urls = ["udp://localhost:8089"] # UDP endpoint example
+  urls = ["http://localhost:8086"] # required
+  # The target database for metrics (telegraf will create it if not exists)
+  database = "aws_spot_prices" # required
+  # Precision of writes, valid values are n, u, ms, s, m, and h
+  # note: using second precision greatly helps InfluxDB compression
+  precision = "s"
+
+  # Connection timeout (for the connection with InfluxDB), formatted as a string.
+  # If not provided, will default to 0 (no timeout)
+  # timeout = "5s"
+  # username = "telegraf"
+  # password = "metricsmetricsmetricsmetrics"
+  # Set the user agent for HTTP POSTs (can be useful for log differentiation)
+  # user_agent = "telegraf"
+  # Set UDP payload size, defaults to InfluxDB UDP Client default (512 bytes)
+  # udp_payload = 512
+
+
+###############################################################################
+#                                  PLUGINS                                    #
+###############################################################################
+
+[plugins]
+
+# us-east-1
+[[plugins.exec]]
+  [[plugins.exec.commands]]
+  command = "/liquefy/spotPriceTracker --region=us-east-1"
+  name = "us-east-1"
+  interval = 30
+
+# us-west-1
+[[plugins.exec]]
+  [[plugins.exec.commands]]
+  command = "/liquefy/spotPriceTracker --region=us-west-1"
+  name = "us-west-1"
+  interval = 30
+
+# us-west-2
+[[plugins.exec]]
+  [[plugins.exec.commands]]
+  command = "/liquefy/spotPriceTracker --region=us-west-2"
+  name = "us-west-2"
+  interval = 30
+
+# eu-central-1
+[[plugins.exec]]
+  [[plugins.exec.commands]]
+  command = "/liquefy/spotPriceTracker --region=eu-central-1"
+  name = "eu-central-1"
+  interval = 30
+
+# eu-west-1
+[[plugins.exec]]
+  [[plugins.exec.commands]]
+  command = "/liquefy/spotPriceTracker --region=eu-west-1"
+  name = "eu-west-1"
+  interval = 30
+
+# ap-southeast-1
+[[plugins.exec]]
+  [[plugins.exec.commands]]
+  command = "/liquefy/spotPriceTracker --region=ap-southeast-1"
+  name = "ap-southeast-1"
+  interval = 30
+
+# ap-southeast-2
+[[plugins.exec]]
+  [[plugins.exec.commands]]
+  command = "/liquefy/spotPriceTracker --region=ap-southeast-2"
+  name = "ap-southeast-2"
+  interval = 30
+
+# ap-northeast-1
+[[plugins.exec]]
+  [[plugins.exec.commands]]
+  command = "/liquefy/spotPriceTracker --region=ap-northeast-1"
+  name = "ap-northeast-1"
+  interval = 30
+
+# ap-northeast-2
+[[plugins.exec]]
+  [[plugins.exec.commands]]
+  command = "/liquefy/spotPriceTracker --region=ap-northeast-2"
+  name = "ap-northeast-2"
+  interval = 30
+
+# sa-east-1
+[[plugins.exec]]
+  [[plugins.exec.commands]]
+  command = "/liquefy/spotPriceTracker --region=sa-east-1"
+  name = "sa-east-1"
+  interval = 30

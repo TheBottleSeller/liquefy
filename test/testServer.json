@@ -1,0 +1,8 @@
+{
+    "name": "TestServer",
+    "source_image": "nbatlivala/test",
+    "port_mappings": "[{\"ContainerPort\": \"80\",\"HostPort\": \"80\"}]",
+    "ram": 50,
+    "cpu": 1,
+    "owner_id": 1
+}

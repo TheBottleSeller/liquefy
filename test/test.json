@@ -1,0 +1,11 @@
+{
+    "name": "foo",
+    "sourceImage": "ubuntu:latest",
+    "command": "for i in $(seq 1 9999); do echo $i ; done",
+    "environment": [{ "variable": "y", "value": "2"}],
+    "ram": 50,
+    "cpu": 1,
+    "firstTry": true,
+    "status": "",
+    "ownerID": 1
+}
